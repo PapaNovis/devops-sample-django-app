@@ -19,6 +19,7 @@ COPY --chmod=755 docker/entrypoint.sh /entrypoint.sh
 ENV APP_PORT=8000
 ENV APP_WORKERS=3
 ENV GUNICORN_CMD_ARGS="--bind=0.0.0.0:${APP_PORT} --workers ${APP_WORKERS}"
+USER ${UID}
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD ["gunicorn", "parrotsite.wsgi:application"]
