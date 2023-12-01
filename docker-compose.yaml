@@ -17,7 +17,7 @@ services:
     volumes:
       - ./data:/app/media/uploads
     ports:
-      - 8000:8000
+      - 8000:${APP_PORT}
     networks:
       - test
     depends_on:
