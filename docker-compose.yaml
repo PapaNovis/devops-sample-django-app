@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      - DJANGO_DB_HOST
+      - DJANGO_DB_NAME
+      - DJANGO_DB_USER
+      - DJANGO_DB_PASS
+      - DJANGO_DB_PORT
+      - DJANGO_DEBUG
+      - APP_PORT
+      - APP_WORKERS
+    volumes:
+      - ./data:/app/media/uploads
+    ports:
+      - 8000:8000
+    networks:
+      - test
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:14-alpine
+    volumes:
+      - ./db-data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    healthcheck:
+      test: ["CMD", "pg_isready","-U", "${POSTGRES_USER}","-d", "${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - test
+volumes:
+  db-data:
+  data:
+
+
+networks:
+  test:
